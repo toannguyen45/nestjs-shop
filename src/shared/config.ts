@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { plainToInstance } from 'class-transformer'
 import { IsString, validateSync } from 'class-validator'
@@ -10,7 +8,6 @@ config({
   path: '.env',
 })
 
-//kiem tra xem file .env co ton tai hay khong
 if (fs.existsSync(path.resolve(__dirname, '.env'))) {
   console.log('Khong tim thay file .env')
   process.exit(1)

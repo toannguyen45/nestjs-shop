@@ -1,12 +1,24 @@
-import { Exclude, Expose } from 'class-transformer'
-import { IsString } from 'class-validator'
+import { Exclude, Type } from 'class-transformer'
+import { IsString, Length } from 'class-validator'
+import { Match } from 'src/shared/decorators/custom-validator.decorator'
+import { SuccessResDTO } from 'src/shared/shared.dto'
 
 export class LoginBodyDTO {
   @IsString()
   email: string
 
   @IsString()
+  @Length(6, 20, { message: 'Password must be between 6 and 20 characters' })
   password: string
+}
+
+export class LoginResDTO {
+  accessToken: string
+  refreshToken: string
+
+  constructor(partial: Partial<LoginResDTO>) {
+    Object.assign(this, partial)
+  }
 }
 
 export class RegisterBodyDTO extends LoginBodyDTO {
@@ -14,10 +26,11 @@ export class RegisterBodyDTO extends LoginBodyDTO {
   name: string
 
   @IsString()
+  @Match('password')
   confirmPassword: string
 }
 
-export class RegisterResponseDTO {
+export class RegisterData {
   id: number
   email: string
   name: string
@@ -33,7 +46,24 @@ export class RegisterResponseDTO {
   //   return `${this.name} - ${this.email}>`
   // }
 
-  constructor(partial: Partial<RegisterResponseDTO>) {
+  constructor(partial: Partial<RegisterData>) {
     Object.assign(this, partial)
   }
 }
+
+export class RegisterResDTO extends SuccessResDTO {
+  @Type(() => RegisterData)
+  declare data: RegisterData
+
+  constructor(partial: Partial<RegisterResDTO>) {
+    super(partial)
+    Object.assign(this, partial)
+  }
+}
+
+export class RefreshTokenBodyDTO {
+  @IsString()
+  refreshToken: string
+}
+
+export class RefreshTokenResDTO extends LoginResDTO {}
